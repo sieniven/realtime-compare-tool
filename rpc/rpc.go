@@ -14,9 +14,14 @@ import (
 	"github.com/ledgerwatch/erigon/zkevm/jsonrpc/client"
 )
 
+type RealtimeClient struct {
+	client ethClienter
+	rpcUrl string
+}
+
 // RealtimeBlockNumber returns the number of the most recent block in real-time
-func RealtimeBlockNumber() (uint64, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_blockNumber")
+func (c *RealtimeClient) RealtimeBlockNumber() (uint64, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_blockNumber")
 	if err != nil {
 		return 0, err
 	}
@@ -28,8 +33,8 @@ func RealtimeBlockNumber() (uint64, error) {
 }
 
 // RealtimeGetBlockTransactionCountByNumber returns the number of transactions in a block by number in real-time
-func RealtimeGetBlockTransactionCountByNumber(blockNumber uint64) (uint64, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_getBlockTransactionCountByNumber", blockNumber)
+func (c *RealtimeClient) RealtimeGetBlockTransactionCountByNumber(blockNumber uint64) (uint64, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_getBlockTransactionCountByNumber", blockNumber)
 	if err != nil {
 		return 0, err
 	}
@@ -41,8 +46,8 @@ func RealtimeGetBlockTransactionCountByNumber(blockNumber uint64) (uint64, error
 }
 
 // RealtimeGetTransactionByHash returns the information about a transaction requested by transaction hash in real-time
-func RealtimeGetTransactionByHash(txHash common.Hash, includeExtraInfo *bool) (rpcTypes.Transaction, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_getTransactionByHash", txHash, includeExtraInfo)
+func (c *RealtimeClient) RealtimeGetTransactionByHash(txHash common.Hash, includeExtraInfo *bool) (rpcTypes.Transaction, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_getTransactionByHash", txHash, includeExtraInfo)
 	if err != nil {
 		return rpcTypes.Transaction{}, err
 	}
@@ -60,8 +65,8 @@ func RealtimeGetTransactionByHash(txHash common.Hash, includeExtraInfo *bool) (r
 }
 
 // RealtimeGetTransactionByHash returns raw information about a transaction requested by transaction hash in real-time
-func RealtimeGetRawTransactionByHash(txHash common.Hash) ([]byte, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_getRawTransactionByHash", txHash)
+func (c *RealtimeClient) RealtimeGetRawTransactionByHash(txHash common.Hash) ([]byte, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_getRawTransactionByHash", txHash)
 	if err != nil {
 		return nil, err
 	}
@@ -79,8 +84,8 @@ func RealtimeGetRawTransactionByHash(txHash common.Hash) ([]byte, error) {
 }
 
 // RealtimeGetTransactionReceipt returns the receipt of a transaction by transaction hash in real-time
-func RealtimeGetTransactionReceipt(txHash common.Hash) (*types.Receipt, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_getTransactionReceipt", txHash)
+func (c *RealtimeClient) RealtimeGetTransactionReceipt(txHash common.Hash) (*types.Receipt, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_getTransactionReceipt", txHash)
 	if err != nil {
 		return nil, err
 	}
@@ -98,8 +103,8 @@ func RealtimeGetTransactionReceipt(txHash common.Hash) (*types.Receipt, error) {
 }
 
 // RealtimeGetInternalTransactions returns the internal transactions for a given transaction hash in real-time
-func RealtimeGetInternalTransactions(txHash common.Hash) ([]zktypes.InnerTx, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_getInternalTransactions", txHash)
+func (c *RealtimeClient) RealtimeGetInternalTransactions(txHash common.Hash) ([]zktypes.InnerTx, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_getInternalTransactions", txHash)
 	if err != nil {
 		return nil, err
 	}
@@ -117,8 +122,8 @@ func RealtimeGetInternalTransactions(txHash common.Hash) ([]zktypes.InnerTx, err
 }
 
 // RealtimeGetBalance returns the balance of an account in real-time
-func RealtimeGetBalance(address common.Address) (*big.Int, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_getBalance", address)
+func (c *RealtimeClient) RealtimeGetBalance(address common.Address) (*big.Int, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_getBalance", address)
 	if err != nil {
 		return nil, err
 	}
@@ -146,8 +151,8 @@ func RealtimeGetBalance(address common.Address) (*big.Int, error) {
 }
 
 // RealtimeGetCode returns the code at a given address in real-time
-func RealtimeGetCode(address common.Address) (string, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_getCode", address)
+func (c *RealtimeClient) RealtimeGetCode(address common.Address) (string, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_getCode", address)
 	if err != nil {
 		return "", err
 	}
@@ -165,8 +170,8 @@ func RealtimeGetCode(address common.Address) (string, error) {
 }
 
 // RealtimeGetTransactionCount returns the number of transactions sent from an address in real-time
-func RealtimeGetTransactionCount(address common.Address) (uint64, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_getTransactionCount", address)
+func (c *RealtimeClient) RealtimeGetTransactionCount(address common.Address) (uint64, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_getTransactionCount", address)
 	if err != nil {
 		return 0, err
 	}
@@ -178,8 +183,8 @@ func RealtimeGetTransactionCount(address common.Address) (uint64, error) {
 }
 
 // RealtimeGetStorageAt returns the value from a storage position at a given address in real-time
-func RealtimeGetStorageAt(address common.Address, position string) (string, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_getStorageAt", address, position)
+func (c *RealtimeClient) RealtimeGetStorageAt(address common.Address, position string) (string, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_getStorageAt", address, position)
 	if err != nil {
 		return "", err
 	}
@@ -197,7 +202,7 @@ func RealtimeGetStorageAt(address common.Address, position string) (string, erro
 }
 
 // RealtimeCall executes a new message call immediately without creating a transaction in real-time
-func RealtimeCall(from, to common.Address, gas string, gasPrice string, value string, data string) (string, error) {
+func (c *RealtimeClient) RealtimeCall(from, to common.Address, gas string, gasPrice string, value string, data string) (string, error) {
 	txParams := map[string]any{
 		"from":     from,
 		"to":       to,
@@ -207,7 +212,7 @@ func RealtimeCall(from, to common.Address, gas string, gasPrice string, value st
 		"data":     data,
 	}
 
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_call", txParams)
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_call", txParams)
 	if err != nil {
 		return "", err
 	}
@@ -224,9 +229,8 @@ func RealtimeCall(from, to common.Address, gas string, gasPrice string, value st
 	return result, nil
 }
 
-func RealtimeGetTokenBalance(
+func (c *RealtimeClient) RealtimeGetTokenBalance(
 	ctx context.Context,
-	c ethClienter,
 	fromAddress common.Address,
 	toAddress common.Address,
 	erc20Addr common.Address,
@@ -238,7 +242,7 @@ func RealtimeGetTokenBalance(
 	}
 
 	// Make the realtime_call
-	result, err := RealtimeCall(fromAddress, erc20Addr, "0x100000", "0x1", "0x0", fmt.Sprintf("0x%x", data))
+	result, err := c.RealtimeCall(fromAddress, erc20Addr, "0x100000", "0x1", "0x0", fmt.Sprintf("0x%x", data))
 	if err != nil {
 		return nil, fmt.Errorf("failed to call contract: %v", err)
 	}
@@ -258,8 +262,8 @@ func RealtimeGetTokenBalance(
 }
 
 // RealtimeDumpStateCache dumps the state cache
-func RealtimeDumpStateCache() error {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "realtime_dumpStateCache")
+func (c *RealtimeClient) RealtimeDumpStateCache() error {
+	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_dumpStateCache")
 	if err != nil {
 		return err
 	}
@@ -271,8 +275,8 @@ func RealtimeDumpStateCache() error {
 }
 
 // EthGetBalance returns the balance of an account
-func EthGetBalance(address common.Address, block string) (*big.Int, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "eth_getBalance", address, block)
+func (c *RealtimeClient) EthGetBalance(address common.Address, block string) (*big.Int, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "eth_getBalance", address, block)
 	if err != nil {
 		return nil, err
 	}
@@ -300,8 +304,8 @@ func EthGetBalance(address common.Address, block string) (*big.Int, error) {
 }
 
 // EthGetTransactionCount returns the number of transactions sent from an address
-func EthGetTransactionCount(address common.Address, block string) (uint64, error) {
-	response, err := client.JSONRPCCall(DefaultL2NetworkURL, "eth_getTransactionCount", address, block)
+func (c *RealtimeClient) EthGetTransactionCount(address common.Address, block string) (uint64, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "eth_getTransactionCount", address, block)
 	if err != nil {
 		return 0, err
 	}
@@ -312,9 +316,8 @@ func EthGetTransactionCount(address common.Address, block string) (uint64, error
 	return transHexToUint64(response.Result)
 }
 
-func EthGetTokenBalance(
+func (c *RealtimeClient) EthGetTokenBalance(
 	ctx context.Context,
-	c ethClienter,
 	addr common.Address,
 	erc20Addr common.Address,
 ) (*big.Int, error) {
@@ -325,7 +328,7 @@ func EthGetTokenBalance(
 	}
 
 	// Make the eth_call
-	result, err := c.CallContract(ctx, ethereum.CallMsg{
+	result, err := c.client.CallContract(ctx, ethereum.CallMsg{
 		To:   &erc20Addr,
 		Data: data,
 	}, nil)
