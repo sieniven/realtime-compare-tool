@@ -12,3 +12,6 @@ go-version:
 build: go-version
 	@cd ./cmd && $(GOBUILD) -o $(GOBIN)/compare
 	@echo "Run \"$(GOBIN)/compare\" to launch realtime-compare-tool"
+
+run:
+	@$(GOBIN)/compare --config config.yaml
