@@ -107,7 +107,11 @@ func (h *consumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 				if !exists {
 					return fmt.Errorf("missing height field in block message")
 				}
-				height := heightData.(int64)
+				heightFloat, ok := heightData.(float64)
+				if !ok {
+					return fmt.Errorf("height field is not a number: %T, value: %v", heightData, heightData)
+				}
+				height := int64(heightFloat)
 				// Send message to height channel
 				select {
 				case h.heightChan <- height:

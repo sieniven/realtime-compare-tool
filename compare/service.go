@@ -68,30 +68,32 @@ func (service *CompareService) Start(ctx context.Context) error {
 	// Start the kafka consumer goroutine
 	go service.KafkaConsumer.ConsumeKafka(ctx, service.HeightChan, service.AddrBalanceChan, service.TokenHolderChan, service.ErrorChan, service.Logger)
 
-	// Start compare goroutines
-	go service.ProcessCompareBalanceCache(ctx)
-	go service.ProcessCompareAddrTokenCache(ctx)
-
 	for {
 		select {
 		case <-ctx.Done():
 			return ErrCtxCancelled
 		case height := <-service.HeightChan:
-			service.NodeHeight.Store(height)
-			if !service.InitFlag.Load() {
-				// Try to init compare service
-				ethHeight, err := service.RpcClient.EthGetBlockNumber(ctx)
-				if err != nil {
-					service.Logger.Printf("error getting node height from rpc client: %v\n", err)
-					continue
-				}
-				diff := int64(ethHeight) - height
-				if diff < 0 {
-					diff = -diff
-				}
-				if diff < DefaultHeightSyncRange {
-					service.InitFlag.Store(true)
-					service.Logger.Println("node heights initialized, starting compare")
+			if service.NodeHeight.Load() < height {
+				service.NodeHeight.Store(height)
+				if !service.InitFlag.Load() {
+					// Try to init compare service
+					ethHeight, err := service.RpcClient.EthGetBlockNumber(ctx)
+					if err != nil {
+						service.Logger.Printf("error getting node height from rpc client: %v\n", err)
+						continue
+					}
+					diff := int64(ethHeight) - height
+					if diff < 0 {
+						diff = -diff
+					}
+					if diff < DefaultHeightSyncRange {
+						service.InitFlag.Store(true)
+						service.Logger.Println("node heights initialized, starting compare")
+					}
+				} else {
+					// New height. Try compare states
+					go service.ProcessCompareBalanceCache(ctx)
+					go service.ProcessCompareAddrTokenCache(ctx)
 				}
 			}
 		case address := <-service.AddrBalanceChan:
