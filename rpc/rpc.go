@@ -9,10 +9,10 @@ import (
 	ethereum "github.com/ledgerwatch/erigon"
 	"github.com/ledgerwatch/erigon-lib/common"
 	"github.com/ledgerwatch/erigon/core/types"
+	"github.com/ledgerwatch/erigon/ethclient"
 	rpcTypes "github.com/ledgerwatch/erigon/zk/rpcdaemon"
 	zktypes "github.com/ledgerwatch/erigon/zk/types"
 	"github.com/ledgerwatch/erigon/zkevm/jsonrpc/client"
-	client, err := ethclient.Dial(DefaultL2NetworkURL)
 )
 
 type RealtimeClient struct {
@@ -211,14 +211,11 @@ func (c *RealtimeClient) RealtimeGetStorageAt(address common.Address, position s
 }
 
 // RealtimeCall executes a new message call immediately without creating a transaction in real-time
-func (c *RealtimeClient) RealtimeCall(from, to common.Address, gas string, gasPrice string, value string, data string) (string, error) {
+func (c *RealtimeClient) RealtimeCall(to common.Address, value string, data string) (string, error) {
 	txParams := map[string]any{
-		"from":     from,
-		"to":       to,
-		"gas":      gas,
-		"gasPrice": gasPrice,
-		"value":    value,
-		"data":     data,
+		"to":    to,
+		"value": value,
+		"data":  data,
 	}
 
 	response, err := client.JSONRPCCall(c.rpcUrl, "realtime_call", txParams)
@@ -240,7 +237,6 @@ func (c *RealtimeClient) RealtimeCall(from, to common.Address, gas string, gasPr
 
 func (c *RealtimeClient) RealtimeGetTokenBalance(
 	ctx context.Context,
-	fromAddress common.Address,
 	toAddress common.Address,
 	erc20Addr common.Address,
 ) (*big.Int, error) {
@@ -251,7 +247,7 @@ func (c *RealtimeClient) RealtimeGetTokenBalance(
 	}
 
 	// Make the realtime_call
-	result, err := c.RealtimeCall(fromAddress, erc20Addr, "0x100000", "0x1", "0x0", fmt.Sprintf("0x%x", data))
+	result, err := c.RealtimeCall(erc20Addr, "0x0", fmt.Sprintf("0x%x", data))
 	if err != nil {
 		return nil, fmt.Errorf("failed to call contract: %v", err)
 	}
