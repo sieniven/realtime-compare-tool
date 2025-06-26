@@ -9,6 +9,6 @@ type KafkaData struct {
 }
 
 type TokenHolderData struct {
-	address      common.Address
-	tokenAddress common.Address
+	Address      common.Address
+	TokenAddress common.Address
 }
