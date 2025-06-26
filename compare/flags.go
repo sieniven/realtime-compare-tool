@@ -50,6 +50,7 @@ var (
 )
 
 var DefaultFlags = []cli.Flag{
+	&ConfigFlag,
 	&KafkaBootstrapServers,
 	&KafkaStateTopic,
 	&KafkaNonStateTopic,
