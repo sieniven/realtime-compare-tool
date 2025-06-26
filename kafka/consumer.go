@@ -39,9 +39,9 @@ func NewKafkaConsumer(config KafkaConfig) (*KafkaConsumer, error) {
 // ConsumeKafka starts consuming kafka messages from the specified topics
 func (client *KafkaConsumer) ConsumeKafka(
 	ctx context.Context,
+	heightChan chan int64,
 	addrBalanceChan chan common.Address,
 	tokenHolderChan chan TokenHolderData,
-	heightChan chan int64,
 	errorChan chan error,
 	logger *log.Logger,
 ) {
@@ -147,8 +147,8 @@ func (h *consumerGroupHandler) ConsumeClaim(session sarama.ConsumerGroupSession,
 				tokenAddress := common.HexToAddress(tokenAddressStr)
 				// Send token holder data to token holder channel
 				tokenHolderData := TokenHolderData{
-					address:      holderAddress,
-					tokenAddress: tokenAddress,
+					Address:      holderAddress,
+					TokenAddress: tokenAddress,
 				}
 				select {
 				case h.tokenHolderChan <- tokenHolderData:

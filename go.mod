@@ -8,7 +8,7 @@ replace github.com/ledgerwatch/erigon-lib => /Users/nivensie/dev/xlayer/xlayer-e
 
 require (
 	github.com/IBM/sarama v1.45.2
-	github.com/hashicorp/golang-lru v1.0.2
+	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/ledgerwatch/erigon v0.0.0-00010101000000-000000000000
 	github.com/ledgerwatch/erigon-lib v1.0.0
 )
