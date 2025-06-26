@@ -12,11 +12,20 @@ import (
 	rpcTypes "github.com/ledgerwatch/erigon/zk/rpcdaemon"
 	zktypes "github.com/ledgerwatch/erigon/zk/types"
 	"github.com/ledgerwatch/erigon/zkevm/jsonrpc/client"
+	client, err := ethclient.Dial(DefaultL2NetworkURL)
 )
 
 type RealtimeClient struct {
 	client ethClienter
 	rpcUrl string
+}
+
+func NewRealtimeClient(rpcUrl string) (*RealtimeClient, error) {
+	client, err := ethclient.Dial(rpcUrl)
+	if err != nil {
+		return nil, err
+	}
+	return &RealtimeClient{client: client, rpcUrl: rpcUrl}, nil
 }
 
 // RealtimeBlockNumber returns the number of the most recent block in real-time
@@ -344,4 +353,15 @@ func (c *RealtimeClient) EthGetTokenBalance(
 	}
 
 	return balance, nil
+}
+
+func (c *RealtimeClient) EthGetBlockNumber(ctx context.Context) (uint64, error) {
+	response, err := client.JSONRPCCall(c.rpcUrl, "eth_blockNumber")
+	if err != nil {
+		return 0, err
+	}
+	if response.Error != nil {
+		return 0, fmt.Errorf("%d - %s", response.Error.Code, response.Error.Message)
+	}
+	return transHexToUint64(response.Result)
 }
