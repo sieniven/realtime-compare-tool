@@ -1,0 +1,7 @@
+kafka.bootstrap-servers: "127.0.0.1:9092"
+kafka.state-topic: "_STATE_TOPIC"
+kafka.non-state-topic: "_NON_STATE_TOPIC"
+kafka.client-id: "realtime-compare-tool"
+rpc.url: "https://testrpc.xlayer.tech"
+ws.url: "ws://localhost:8546"
+compare.mismatch-count: 5
