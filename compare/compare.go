@@ -74,7 +74,7 @@ func (service *CompareService) ProcessCompareAddrTokenCache(ctx context.Context)
 						service.addrTokenCache.AddWithCount(tokenAddress, address, count+1)
 					}
 				} else {
-					service.Logger.Printf("Address token balances are equal at height %d for token address %s and addres %s\n", service.NodeHeight.Load(), tokenAddress, address)
+					service.Logger.Printf("Address token balances are equal at height %d for token address %s and address %s\n", service.NodeHeight.Load(), tokenAddress, address)
 					service.addrTokenCache.Remove(tokenAddress, address)
 				}
 			}
