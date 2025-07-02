@@ -100,9 +100,29 @@ func (service *CompareService) Start(ctx context.Context) error {
 			if !service.InitFlag.Load() {
 				continue
 			}
+			skipFlag := false
+			for _, skipAddress := range service.Config.SkipAddresses {
+				if address.Hex() == skipAddress.Hex() {
+					skipFlag = true
+					break
+				}
+			}
+			if skipFlag {
+				continue
+			}
 			service.balanceCache.Add(address)
 		case tokenHolder := <-service.TokenHolderChan:
 			if !service.InitFlag.Load() {
+				continue
+			}
+			skipFlag := false
+			for _, skipAddress := range service.Config.SkipAddresses {
+				if tokenHolder.Address.Hex() == skipAddress.Hex() {
+					skipFlag = true
+					break
+				}
+			}
+			if skipFlag {
 				continue
 			}
 			service.addrTokenCache.Add(tokenHolder.TokenAddress, tokenHolder.Address)

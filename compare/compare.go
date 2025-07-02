@@ -26,6 +26,9 @@ func (service *CompareService) ProcessCompareBalanceCache(ctx context.Context) {
 			} else {
 				service.balanceCache.AddWithCount(address, count+1)
 			}
+		} else {
+			service.Logger.Printf("Native balance are equal at height %d for address %s\n", service.NodeHeight.Load(), address)
+			service.balanceCache.Remove(address)
 		}
 	}
 }
@@ -50,10 +53,13 @@ func (service *CompareService) ProcessCompareAddrTokenCache(ctx context.Context)
 				count := service.addrTokenCache.GetCount(tokenAddress, address)
 				if count > service.Config.MismatchCount {
 					service.Logger.Printf("Error in state comparator: balance mismatch at height %d for address %s, eth: %s, realtime: %s\n", service.NodeHeight.Load(), address, ethBalance, realtimeBalance)
-					service.balanceCache.Remove(address)
+					service.addrTokenCache.Remove(tokenAddress, address)
 				} else {
-					service.balanceCache.AddWithCount(address, count+1)
+					service.addrTokenCache.AddWithCount(tokenAddress, address, count+1)
 				}
+			} else {
+				service.Logger.Printf("Address token balances are equal at height %d for token address %s and addres %s\n", service.NodeHeight.Load(), tokenAddress, address)
+				service.addrTokenCache.Remove(tokenAddress, address)
 			}
 		}
 	}

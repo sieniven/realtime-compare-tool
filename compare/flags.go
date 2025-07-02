@@ -47,6 +47,11 @@ var (
 		Usage: "Mismatch count",
 		Value: 0,
 	}
+	SkipAddresses = cli.StringFlag{
+		Name:  "compare.skip-addresses",
+		Usage: "Skip addresses",
+		Value: "",
+	}
 )
 
 var DefaultFlags = []cli.Flag{
@@ -58,4 +63,5 @@ var DefaultFlags = []cli.Flag{
 	&RpcUrl,
 	&WsUrl,
 	&MismatchCount,
+	&SkipAddresses,
 }

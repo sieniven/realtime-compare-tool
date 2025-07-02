@@ -3,6 +3,7 @@ package compare
 import (
 	"strings"
 
+	"github.com/ledgerwatch/erigon-lib/common"
 	"github.com/sieniven/realtime-compare-tool/kafka"
 	"github.com/urfave/cli/v2"
 )
@@ -13,6 +14,7 @@ type CompareConfig struct {
 
 	// Compare configs
 	MismatchCount int
+	SkipAddresses []common.Address
 }
 
 type RpcConfig struct {
@@ -33,6 +35,13 @@ func NewCompareConfig(ctx *cli.Context) CompareConfig {
 			WsUrl:  ctx.String(WsUrl.Name),
 		},
 		MismatchCount: ctx.Int(MismatchCount.Name),
+		SkipAddresses: make([]common.Address, 0),
 	}
+
+	addrsHex := strings.Split(ctx.String(SkipAddresses.Name), ",")
+	for _, addrHex := range addrsHex {
+		cfg.SkipAddresses = append(cfg.SkipAddresses, common.HexToAddress(addrHex))
+	}
+
 	return cfg
 }
