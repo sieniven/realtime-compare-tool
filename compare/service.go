@@ -67,6 +67,8 @@ func NewCompareService(config CompareConfig, logger *log.Logger) (*CompareServic
 func (service *CompareService) Start(ctx context.Context) error {
 	// Start the kafka consumer goroutine
 	go service.KafkaConsumer.ConsumeKafka(ctx, service.HeightChan, service.AddrBalanceChan, service.TokenHolderChan, service.ErrorChan, service.Logger)
+	go service.ProcessCompareBalanceCache(ctx)
+	go service.ProcessCompareAddrTokenCache(ctx)
 
 	for {
 		select {
@@ -90,10 +92,6 @@ func (service *CompareService) Start(ctx context.Context) error {
 						service.InitFlag.Store(true)
 						service.Logger.Println("node heights initialized, starting compare")
 					}
-				} else {
-					// New height. Try compare states
-					go service.ProcessCompareBalanceCache(ctx)
-					go service.ProcessCompareAddrTokenCache(ctx)
 				}
 			}
 		case address := <-service.AddrBalanceChan:

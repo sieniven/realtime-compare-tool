@@ -13,8 +13,9 @@ type CompareConfig struct {
 	Rpc   RpcConfig
 
 	// Compare configs
-	MismatchCount int
-	SkipAddresses []common.Address
+	MismatchCount     int
+	CompareIntervalMS int
+	SkipAddresses     []common.Address
 }
 
 type RpcConfig struct {
@@ -34,8 +35,9 @@ func NewCompareConfig(ctx *cli.Context) CompareConfig {
 			RpcUrl: ctx.String(RpcUrl.Name),
 			WsUrl:  ctx.String(WsUrl.Name),
 		},
-		MismatchCount: ctx.Int(MismatchCount.Name),
-		SkipAddresses: make([]common.Address, 0),
+		MismatchCount:     ctx.Int(MismatchCount.Name),
+		CompareIntervalMS: ctx.Int(CompareIntervalMS.Name),
+		SkipAddresses:     make([]common.Address, 0),
 	}
 
 	addrsHex := strings.Split(ctx.String(SkipAddresses.Name), ",")

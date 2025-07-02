@@ -5,4 +5,5 @@ kafka.client-id: "realtime-compare-tool"
 rpc.url: "https://testrpc.xlayer.tech"
 ws.url: "ws://localhost:8546"
 compare.mismatch-count: 10
+compare.interval-ms: 5000
 compare.skip-addresses: ""

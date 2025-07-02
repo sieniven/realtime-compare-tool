@@ -47,6 +47,11 @@ var (
 		Usage: "Mismatch count",
 		Value: 0,
 	}
+	CompareIntervalMS = cli.IntFlag{
+		Name:  "compare.interval-ms",
+		Usage: "Compare time interval in milliseconds",
+		Value: 1000,
+	}
 	SkipAddresses = cli.StringFlag{
 		Name:  "compare.skip-addresses",
 		Usage: "Skip addresses",
@@ -63,5 +68,6 @@ var DefaultFlags = []cli.Flag{
 	&RpcUrl,
 	&WsUrl,
 	&MismatchCount,
+	&CompareIntervalMS,
 	&SkipAddresses,
 }
