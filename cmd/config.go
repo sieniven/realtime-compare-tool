@@ -43,7 +43,8 @@ func NewMonitorConfig(ctx *cli.Context) monitor.MonitorConfig {
 			NonRtRpcUrl: ctx.String(NonRtRpcUrl.Name),
 			WsUrl:       ctx.String(WsUrl.Name),
 		},
-		ThresholdTime: ctx.Duration(ThresholdTime.Name),
+		ThresholdTime:   ctx.Duration(ThresholdTime.Name),
+		LogBlockTimeOut: ctx.Bool(LogBlockTimeOut.Name),
 	}
 	return cfg
 }

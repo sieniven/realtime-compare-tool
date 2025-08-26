@@ -83,6 +83,11 @@ var (
 		Usage: "Threshold time",
 		Value: 1 * time.Second,
 	}
+	LogBlockTimeOut = cli.BoolFlag{
+		Name:  "monitor.log-block-timeout",
+		Usage: "Log block timeout",
+		Value: false,
+	}
 )
 
 var DefaultFlags = []cli.Flag{
@@ -100,4 +105,5 @@ var DefaultFlags = []cli.Flag{
 	&CompareIntervalMS,
 	&SkipAddresses,
 	&ThresholdTime,
+	&LogBlockTimeOut,
 }

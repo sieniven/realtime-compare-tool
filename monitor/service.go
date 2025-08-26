@@ -63,6 +63,9 @@ func (service *MonitorService) Start(ctx context.Context) error {
 			if timeTaken > service.Config.ThresholdTime {
 				service.Logger.Printf("time taken for block height %d update is greater than threshold: %v\n", nextHeight, timeTaken)
 			}
+			if service.Config.LogBlockTimeOut {
+				service.Logger.Printf("block height %d took: %v\n", nextHeight, timeTaken)
+			}
 			lastBlockUpdateTime = time.Now()
 			service.currHeight = nextHeight
 		}

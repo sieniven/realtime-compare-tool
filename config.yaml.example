@@ -9,3 +9,4 @@ compare.mismatch-count: 10
 compare.interval-ms: 5000
 compare.skip-addresses: ""
 monitor.threshold-time: 1s
+monitor.log-block-timeout: false
