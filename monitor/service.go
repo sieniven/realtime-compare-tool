@@ -55,6 +55,9 @@ func (service *MonitorService) Start(ctx context.Context) error {
 			continue
 		}
 
+		if service.Config.LogBlockTimeOut {
+			service.Logger.Printf("current node height is: %v\n", nextHeight)
+		}
 		if service.currHeight == 0 {
 			service.currHeight = nextHeight
 		} else if nextHeight > service.currHeight {
