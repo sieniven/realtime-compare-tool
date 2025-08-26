@@ -99,4 +99,5 @@ var DefaultFlags = []cli.Flag{
 	&MismatchCount,
 	&CompareIntervalMS,
 	&SkipAddresses,
+	&ThresholdTime,
 }
