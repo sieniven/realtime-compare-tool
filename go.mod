@@ -65,4 +65,4 @@ require (
 	rsc.io/tmplfunc v0.0.3 // indirect
 )
 
-replace github.com/ethereum/go-ethereum => ../../../op-stack/op-geth
+replace github.com/ethereum/go-ethereum => /Users/nivensie/dev/xlayer/op-stack/op-geth
