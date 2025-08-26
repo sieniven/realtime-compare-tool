@@ -13,6 +13,17 @@ var (
 		Usage: "Sets the configuration flags from YAML file",
 		Value: "",
 	}
+	// Program flags
+	CompareFlag = cli.StringFlag{
+		Name:  "compare",
+		Usage: "Run compare program",
+		Value: "false",
+	}
+	MonitorFlag = cli.StringFlag{
+		Name:  "monitor",
+		Usage: "Run monitor program",
+		Value: "false",
+	}
 	// Kafka flags
 	KafkaBootstrapServers = cli.StringFlag{
 		Name:  "kafka.bootstrap-servers",
