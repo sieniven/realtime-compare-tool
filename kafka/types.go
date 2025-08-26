@@ -1,6 +1,6 @@
 package kafka
 
-import "github.com/ledgerwatch/erigon-lib/common"
+import "github.com/ethereum/go-ethereum/common"
 
 type KafkaData struct {
 	Topic string                 `json:"topic"`

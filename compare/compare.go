@@ -3,6 +3,8 @@ package compare
 import (
 	"context"
 	"time"
+
+	"github.com/ethereum/go-ethereum/common"
 )
 
 func (service *CompareService) ProcessCompareBalanceCache(ctx context.Context) {
@@ -15,12 +17,12 @@ func (service *CompareService) ProcessCompareBalanceCache(ctx context.Context) {
 		addresses := service.balanceCache.GetAddresses()
 		for _, address := range addresses {
 			// Run the native balance comparison
-			ethBalance, err := service.RpcClient.EthGetBalance(address, "latest")
+			ethBalance, err := service.NonRtRpcClient.BalanceAt(ctx, address, nil)
 			if err != nil {
 				service.Logger.Printf("error getting eth balance for address %s: %v\n", address, err)
 				continue
 			}
-			realtimeBalance, err := service.RpcClient.RealtimeGetBalance(address)
+			realtimeBalance, err := service.RtRpcClient.RealtimeGetBalance(ctx, address)
 			if err != nil {
 				service.Logger.Printf("error getting realtime balance for address %s: %v\n", address, err)
 				continue
@@ -55,12 +57,12 @@ func (service *CompareService) ProcessCompareAddrTokenCache(ctx context.Context)
 			addresses := service.addrTokenCache.GetAddressesFromTokenAddress(tokenAddress)
 			for _, address := range addresses {
 				// Run the token balance comparison
-				ethBalance, err := service.RpcClient.EthGetTokenBalance(ctx, address, tokenAddress)
+				ethBalance, err := service.NonRtRpcClient.EthGetTokenBalance(ctx, address, tokenAddress)
 				if err != nil {
 					service.Logger.Printf("error getting eth token balance for token address %s and address %s: %v\n", tokenAddress, address, err)
 					continue
 				}
-				realtimeBalance, err := service.RpcClient.RealtimeGetTokenBalance(ctx, address, tokenAddress)
+				realtimeBalance, err := service.RtRpcClient.RealtimeGetTokenBalance(ctx, common.Address{}, address, tokenAddress)
 				if err != nil {
 					service.Logger.Printf("error getting realtime token balance for token address %s and address %s: %v\n", tokenAddress, address, err)
 					continue

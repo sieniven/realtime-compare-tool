@@ -7,7 +7,7 @@ import (
 	"log"
 
 	"github.com/IBM/sarama"
-	"github.com/ledgerwatch/erigon-lib/common"
+	"github.com/ethereum/go-ethereum/common"
 )
 
 type KafkaConsumer struct {

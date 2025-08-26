@@ -31,9 +31,14 @@ var (
 		Value: "",
 	}
 	// RPC flags
-	RpcUrl = cli.StringFlag{
-		Name:  "rpc.url",
-		Usage: "RPC url",
+	RtRpcUrl = cli.StringFlag{
+		Name:  "rpc.rt-url",
+		Usage: "Realtime RPC url",
+		Value: "",
+	}
+	NonRtRpcUrl = cli.StringFlag{
+		Name:  "rpc.non-rt-url",
+		Usage: "Non realtime RPC url",
 		Value: "",
 	}
 	WsUrl = cli.StringFlag{
@@ -65,7 +70,8 @@ var DefaultFlags = []cli.Flag{
 	&KafkaStateTopic,
 	&KafkaNonStateTopic,
 	&KafkaClientID,
-	&RpcUrl,
+	&RtRpcUrl,
+	&NonRtRpcUrl,
 	&WsUrl,
 	&MismatchCount,
 	&CompareIntervalMS,

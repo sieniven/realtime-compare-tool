@@ -5,9 +5,10 @@ import (
 	"log"
 	"sync/atomic"
 
-	"github.com/ledgerwatch/erigon-lib/common"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/sieniven/realtime-compare-tool/kafka"
-	"github.com/sieniven/realtime-compare-tool/rpc"
+	"github.com/sieniven/realtime-compare-tool/rpc/rtclient"
 )
 
 type CompareService struct {
@@ -15,9 +16,10 @@ type CompareService struct {
 	NodeHeight atomic.Int64
 	Config     CompareConfig
 
-	KafkaConsumer *kafka.KafkaConsumer
-	RpcClient     *rpc.RealtimeClient
-	Logger        *log.Logger
+	KafkaConsumer  *kafka.KafkaConsumer
+	RtRpcClient    *rtclient.RealtimeClient
+	NonRtRpcClient *rtclient.RealtimeClient
+	Logger         *log.Logger
 
 	// Compare cache
 	balanceCache   *CompareBalanceCache
@@ -35,7 +37,19 @@ func NewCompareService(config CompareConfig, logger *log.Logger) (*CompareServic
 	if err != nil {
 		return nil, err
 	}
-	rpcClient, err := rpc.NewRealtimeClient(config.Rpc.RpcUrl)
+	ec, err := ethclient.Dial(config.Rpc.RtRpcUrl)
+	if err != nil {
+		return nil, err
+	}
+	rtRpcClient, err := rtclient.NewRealtimeClient(context.Background(), ec, config.Rpc.RtRpcUrl)
+	if err != nil {
+		return nil, err
+	}
+	nec, err := ethclient.Dial(config.Rpc.NonRtRpcUrl)
+	if err != nil {
+		return nil, err
+	}
+	nonRtRpcClient, err := rtclient.NewRealtimeClient(context.Background(), nec, config.Rpc.NonRtRpcUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +67,8 @@ func NewCompareService(config CompareConfig, logger *log.Logger) (*CompareServic
 		NodeHeight:      atomic.Int64{},
 		Config:          config,
 		KafkaConsumer:   kafkaConsumer,
-		RpcClient:       rpcClient,
+		RtRpcClient:     rtRpcClient,
+		NonRtRpcClient:  nonRtRpcClient,
 		Logger:          logger,
 		balanceCache:    balanceCache,
 		addrTokenCache:  addrTokenCache,
@@ -79,7 +94,7 @@ func (service *CompareService) Start(ctx context.Context) error {
 				service.NodeHeight.Store(height)
 				if !service.InitFlag.Load() {
 					// Try to init compare service
-					ethHeight, err := service.RpcClient.EthGetBlockNumber(ctx)
+					ethHeight, err := service.RtRpcClient.RealtimeBlockNumber(ctx)
 					if err != nil {
 						service.Logger.Printf("error getting node height from rpc client: %v\n", err)
 						continue

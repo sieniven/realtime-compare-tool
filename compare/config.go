@@ -3,7 +3,7 @@ package compare
 import (
 	"strings"
 
-	"github.com/ledgerwatch/erigon-lib/common"
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/sieniven/realtime-compare-tool/kafka"
 	"github.com/urfave/cli/v2"
 )
@@ -19,8 +19,9 @@ type CompareConfig struct {
 }
 
 type RpcConfig struct {
-	RpcUrl string
-	WsUrl  string
+	RtRpcUrl    string
+	NonRtRpcUrl string
+	WsUrl       string
 }
 
 func NewCompareConfig(ctx *cli.Context) CompareConfig {
@@ -32,8 +33,9 @@ func NewCompareConfig(ctx *cli.Context) CompareConfig {
 			ClientID:         ctx.String(KafkaClientID.Name),
 		},
 		Rpc: RpcConfig{
-			RpcUrl: ctx.String(RpcUrl.Name),
-			WsUrl:  ctx.String(WsUrl.Name),
+			RtRpcUrl:    ctx.String(RtRpcUrl.Name),
+			NonRtRpcUrl: ctx.String(NonRtRpcUrl.Name),
+			WsUrl:       ctx.String(WsUrl.Name),
 		},
 		MismatchCount:     ctx.Int(MismatchCount.Name),
 		CompareIntervalMS: ctx.Int(CompareIntervalMS.Name),
