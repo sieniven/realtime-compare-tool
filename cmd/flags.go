@@ -87,6 +87,8 @@ var (
 
 var DefaultFlags = []cli.Flag{
 	&ConfigFlag,
+	&CompareFlag,
+	&MonitorFlag,
 	&KafkaBootstrapServers,
 	&KafkaStateTopic,
 	&KafkaNonStateTopic,
