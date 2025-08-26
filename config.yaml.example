@@ -8,3 +8,4 @@ ws.url: "ws://localhost:8546"
 compare.mismatch-count: 10
 compare.interval-ms: 5000
 compare.skip-addresses: ""
+monitor.threshold-time: 1s

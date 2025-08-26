@@ -1,6 +1,10 @@
-package compare
+package main
 
-import "github.com/urfave/cli/v2"
+import (
+	"time"
+
+	"github.com/urfave/cli/v2"
+)
 
 var (
 	// Default flags
@@ -61,6 +65,12 @@ var (
 		Name:  "compare.skip-addresses",
 		Usage: "Skip addresses",
 		Value: "",
+	}
+	// Monitor flags
+	ThresholdTime = cli.DurationFlag{
+		Name:  "monitor.threshold-time",
+		Usage: "Threshold time",
+		Value: 1 * time.Second,
 	}
 )
 

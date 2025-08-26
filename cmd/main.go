@@ -8,15 +8,21 @@ import (
 	"strings"
 
 	"github.com/sieniven/realtime-compare-tool/compare"
+	"github.com/sieniven/realtime-compare-tool/monitor"
 	"github.com/urfave/cli/v2"
 	"gopkg.in/yaml.v2"
+)
+
+const (
+	COMPARE_FLAG = "compare"
+	MONITOR_FLAG = "monitor"
 )
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "realtime-comparator"
 	app.Action = run
-	app.Flags = compare.DefaultFlags
+	app.Flags = DefaultFlags
 	if err := app.Run(os.Args); err != nil {
 		_, printErr := fmt.Fprintln(os.Stderr, err)
 		if printErr != nil {
@@ -28,7 +34,7 @@ func main() {
 
 func run(ctx *cli.Context) error {
 	logger := log.Default()
-	configFilePath := ctx.String(compare.ConfigFlag.Name)
+	configFilePath := ctx.String(ConfigFlag.Name)
 	if configFilePath != "" {
 		if err := setFlagsFromConfigFile(ctx, configFilePath, logger); err != nil {
 			logger.Printf("failed setting config flags from yaml/toml file, err: %v\n", err)
@@ -36,14 +42,24 @@ func run(ctx *cli.Context) error {
 		}
 	}
 
-	compareCfg := compare.NewCompareConfig(ctx)
-	service, err := compare.NewCompareService(compareCfg, logger)
-	if err != nil {
-		logger.Printf("failed creating compare service, err: %v\n", err)
-		return err
+	if ctx.IsSet(COMPARE_FLAG) {
+		compareCfg := NewCompareConfig(ctx)
+		service, err := compare.NewCompareService(compareCfg, logger)
+		if err != nil {
+			logger.Printf("failed creating compare service, err: %v\n", err)
+			return err
+		}
+		service.Start(ctx.Context)
+		return nil
+	} else if ctx.IsSet(MONITOR_FLAG) {
+		monitorCfg := NewMonitorConfig(ctx)
+		service, err := monitor.NewMonitorService(monitorCfg, logger)
+		if err != nil {
+			logger.Printf("failed creating monitor service, err: %v\n", err)
+			return err
+		}
+		service.Start(ctx.Context)
 	}
-
-	service.Start(ctx.Context)
 	return nil
 }
 
